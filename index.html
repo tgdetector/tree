@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Growing Colorful Tree</title>
+  <title>For You My Love Akanksha Ji ❤️</title>
   <style>
     * {
       margin: 0;
@@ -22,7 +22,7 @@
 
     #canvas {
       display: block;
-      background: radial-gradient(circle at bottom, #161b22 0%, #0d1117 100%);
+      background: radial-gradient(circle at bottom, #1a162b 0%, #0a0c10 100%);
     }
 
     /* Intro Overlay */
@@ -34,21 +34,44 @@
       justify-content: center;
       z-index: 10;
       pointer-events: none;
-      transition: opacity 1s ease;
+      text-align: center;
+      transition: opacity 1.2s ease;
+      padding: 20px;
+    }
+
+    .dedication-text {
+      color: #ff79c6;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(255, 121, 198, 0.6);
+      animation: fadeInDown 1.2s ease forwards;
     }
 
     .intro-text {
       color: #f0f6fc;
-      font-size: 3rem;
+      font-size: 2.8rem;
       font-weight: 700;
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px rgba(88, 166, 255, 0.6);
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(88, 166, 255, 0.7);
       animation: pulse 1.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes pulse {
       0% {
-        opacity: 0.3;
+        opacity: 0.5;
         transform: scale(0.96);
       }
       100% {
@@ -57,39 +80,132 @@
       }
     }
 
-    /* Restart Button */
-    #restart-btn {
+    /* Final Message Page Overlay */
+    #final-screen {
       position: absolute;
-      bottom: 25px;
-      padding: 10px 22px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #c9d1d9;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      background: rgba(13, 17, 23, 0.75);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.5s ease-in-out;
+      text-align: center;
+      padding: 25px;
+    }
+
+    #final-screen.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .love-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 121, 198, 0.3);
+      padding: 40px 30px;
+      border-radius: 24px;
+      max-width: 600px;
+      box-shadow: 0 0 35px rgba(255, 105, 180, 0.25);
+      animation: popUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popUp {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .love-message {
+      color: #fff;
+      font-size: 2.2rem;
+      line-height: 1.5;
+      font-weight: 600;
+      margin-bottom: 25px;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ff758c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
+    }
+
+    .btn {
+      padding: 12px 28px;
+      background: linear-gradient(45deg, #ff758c, #ff7eb3);
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 0.95rem;
-      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
       transition: all 0.3s ease;
     }
-    #restart-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 117, 140, 0.6);
+    }
+
+    /* Floating Little Hearts Background Effect */
+    .heart {
+      position: absolute;
+      color: #ff4d6d;
+      font-size: 20px;
+      animation: floatUp 4s linear infinite;
+      opacity: 0;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-250px) scale(1.2);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Intro Screen -->
   <div id="intro-screen">
+    <div class="dedication-text">This is for you my love Akanksha ji ❤️</div>
     <div class="intro-text">Let's Start...</div>
   </div>
 
+  <!-- Final Page Screen -->
+  <div id="final-screen">
+    <div class="love-card">
+      <h1 class="love-message">
+        This is how you made my life beautiful baby<br>
+        I love you a lot my baby 🌷❤️
+      </h1>
+      <button class="btn" onclick="startAnimation()">Replay with Love ✨</button>
+    </div>
+  </div>
+
   <canvas id="canvas"></canvas>
-  <button id="restart-btn" onclick="startAnimation()">Restart Growth</button>
 
   <script>
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const introScreen = document.getElementById("intro-screen");
+    const finalScreen = document.getElementById("final-screen");
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -100,8 +216,8 @@
 
     let branchQueue = [];
     let animationId = null;
+    let heartInterval = null;
 
-    // Branch item definition
     function createBranch(startX, startY, length, angle, thickness, hue, depth) {
       return {
         startX,
@@ -116,33 +232,51 @@
       };
     }
 
+    function spawnHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = Math.random() > 0.4 ? "❤️" : "🌷";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.top = (window.innerHeight - 50) + "px";
+      heart.style.fontSize = (16 + Math.random() * 20) + "px";
+      heart.style.animationDuration = (3 + Math.random() * 2.5) + "s";
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 4000);
+    }
+
     function startAnimation() {
       if (animationId) cancelAnimationFrame(animationId);
+      if (heartInterval) clearInterval(heartInterval);
+      
+      finalScreen.classList.remove("show");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       branchQueue = [];
 
-      // Intro animation sequence
+      // Intro Show
       introScreen.style.opacity = "1";
+
       setTimeout(() => {
+        // Fade out intro
         introScreen.style.opacity = "0";
 
-        // Initialize trunk after intro fades
         setTimeout(() => {
           const startX = canvas.width / 2;
-          const startY = canvas.height - 40;
+          const startY = canvas.height - 50;
           const trunkLength = Math.min(canvas.height * 0.22, 130);
-          
+
           branchQueue.push(
-            createBranch(startX, startY, trunkLength, -Math.PI / 2, 12, 30, 0)
+            createBranch(startX, startY, trunkLength, -Math.PI / 2, 12, 330, 0)
           );
           loop();
-        }, 600);
-      }, 1600);
+        }, 700);
+      }, 2500); // 2.5 seconds to read the intro
     }
 
     function loop() {
-      // Control branch growth rate
-      const growthSpeed = 2.4; 
+      const growthSpeed = 2.5; 
       let activeBranches = 0;
 
       for (let i = 0; i < branchQueue.length; i++) {
@@ -151,7 +285,6 @@
 
         activeBranches++;
 
-        // Draw incremental step
         const prevX = b.startX + Math.cos(b.angle) * b.currentLen;
         const prevY = b.startY + Math.sin(b.angle) * b.currentLen;
 
@@ -163,24 +296,22 @@
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);
         ctx.lineTo(nextX, nextY);
-        ctx.strokeStyle = `hsl(${b.hue}, 80%, 60%)`;
+        ctx.strokeStyle = `hsl(${b.hue}, 85%, 65%)`;
         ctx.lineWidth = b.thickness;
         ctx.lineCap = "round";
         ctx.stroke();
 
-        // Branch completed -> spawn child branches
         if (b.currentLen >= b.targetLen) {
           b.isDone = true;
 
-          // End of branch: leaves/blossoms
-          if (b.depth >= 8 || b.targetLen < 12) {
+          // Blossom at ends
+          if (b.depth >= 8 || b.targetLen < 14) {
             drawFlower(nextX, nextY, b.hue);
           } else {
-            // Branch split parameters
             const nextDepth = b.depth + 1;
             const nextLen = b.targetLen * (0.72 + Math.random() * 0.08);
             const nextThick = Math.max(b.thickness * 0.7, 1.2);
-            const hueShift = 28;
+            const hueShift = 25;
 
             const spread1 = 0.35 + Math.random() * 0.15;
             const spread2 = -(0.35 + Math.random() * 0.15);
@@ -189,10 +320,9 @@
               createBranch(nextX, nextY, nextLen, b.angle + spread1, nextThick, (b.hue + hueShift) % 360, nextDepth)
             );
             branchQueue.push(
-              createBranch(nextX, nextY, nextLen, b.angle + spread2, nextThick, (b.hue + hueShift + 10) % 360, nextDepth)
+              createBranch(nextX, nextY, nextLen, b.angle + spread2, nextThick, (b.hue + hueShift + 15) % 360, nextDepth)
             );
 
-            // Occasional 3rd sub-branch for volume
             if (Math.random() > 0.65 && b.depth < 5) {
               branchQueue.push(
                 createBranch(nextX, nextY, nextLen * 0.75, b.angle + (Math.random() - 0.5) * 0.4, nextThick, (b.hue + hueShift * 2) % 360, nextDepth)
@@ -204,20 +334,26 @@
 
       if (activeBranches > 0) {
         animationId = requestAnimationFrame(loop);
+      } else {
+        // Tree growth complete -> Show the final love page
+        setTimeout(() => {
+          finalScreen.classList.add("show");
+          heartInterval = setInterval(spawnHeart, 350);
+        }, 800);
       }
     }
 
     function drawFlower(x, y, hue) {
       ctx.beginPath();
-      ctx.arc(x, y, 3.5 + Math.random() * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${(hue + 90) % 360}, 90%, 75%, 0.85)`;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = `hsl(${(hue + 90) % 360}, 90%, 75%)`;
+      ctx.arc(x, y, 3.5 + Math.random() * 3, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${hue}, 95%, 75%, 0.85)`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `hsl(${hue}, 90%, 75%)`;
       ctx.fill();
-      ctx.shadowBlur = 0; // reset glow
+      ctx.shadowBlur = 0;
     }
 
-    // Run automatically on load
+    // Auto start on page load
     startAnimation();
   </script>
 </body>
