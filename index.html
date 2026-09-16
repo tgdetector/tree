@@ -34,6 +34,7 @@
     #bg-canvas { z-index: 1; }
     #tree-canvas { z-index: 2; }
     #fx-canvas { z-index: 3; pointer-events: none; }
+    #rain-canvas { z-index: 4; display: none; }
 
     /* Intro Overlay */
     #intro-screen {
@@ -102,7 +103,7 @@
       100% { transform: translateY(-8px); }
     }
 
-    /* Final Surprise Card Overlay */
+    /* Love Letter Screen Overlay */
     #final-screen {
       position: absolute;
       inset: 0;
@@ -115,13 +116,19 @@
       backdrop-filter: blur(12px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 1.8s ease;
+      transition: opacity 1.2s ease, transform 1.2s ease;
       padding: 15px;
     }
 
     #final-screen.show {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    #final-screen.fade-out {
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
     }
 
     .glass-envelope {
@@ -140,10 +147,7 @@
       transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Custom subtle scrollbar */
-    .glass-envelope::-webkit-scrollbar {
-      width: 4px;
-    }
+    .glass-envelope::-webkit-scrollbar { width: 4px; }
     .glass-envelope::-webkit-scrollbar-thumb {
       background: rgba(255, 117, 140, 0.4);
       border-radius: 10px;
@@ -178,9 +182,7 @@
       text-shadow: 0 2px 10px rgba(255, 105, 180, 0.25);
     }
 
-    .typewriter-container p {
-      margin-bottom: 12px;
-    }
+    .typewriter-container p { margin-bottom: 12px; }
 
     .highlight-sorry {
       font-size: clamp(1.15rem, 3.4vw, 1.35rem);
@@ -211,13 +213,13 @@
     }
 
     .love-btn {
-      padding: 11px 24px;
+      padding: 12px 26px;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: #fff;
       border-radius: 25px;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.95rem;
+      font-weight: 600;
       cursor: pointer;
       backdrop-filter: blur(5px);
       transition: all 0.3s;
@@ -234,16 +236,99 @@
       border: none;
       box-shadow: 0 4px 18px rgba(201, 24, 74, 0.45);
     }
+
+    /* Transition Loader Screen */
+    #loader-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      background: radial-gradient(circle at center, #1b0c1e 0%, #050408 100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    #loader-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .loader-heart {
+      font-size: 3.5rem;
+      animation: beatLoader 1.2s infinite ease-in-out;
+    }
+
+    .loader-title {
+      color: #ffb4d6;
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.2rem;
+      margin-top: 15px;
+      letter-spacing: 1px;
+    }
+
+    .progress-track {
+      width: 200px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff4071, #ff9a9e);
+      border-radius: 10px;
+      transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes beatLoader {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    /* Final Rain Stage Overlay Info */
+    #rain-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 20px;
+      pointer-events: none;
+    }
+
+    .rain-header {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      color: #fff;
+      text-shadow: 0 0 25px rgba(255, 77, 109, 0.8);
+      text-align: center;
+      animation: floatTag 3.5s ease-in-out infinite alternate;
+    }
+
+    .rain-footer-hint {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Background Canvas for Stars & Fireflies -->
   <canvas id="bg-canvas"></canvas>
-  <!-- Tree Drawing Canvas -->
   <canvas id="tree-canvas"></canvas>
-  <!-- Sparkles & Petal FX Canvas -->
   <canvas id="fx-canvas"></canvas>
+  <canvas id="rain-canvas"></canvas>
 
   <!-- Step 1: Intro Screen -->
   <div id="intro-screen">
@@ -252,11 +337,11 @@
     <button class="start-btn" id="start-trigger">Let's Start... 🌷</button>
   </div>
 
-  <!-- Step 2: Final Love Letter Card Screen -->
+  <!-- Step 2: Love Letter Screen -->
   <div id="final-screen">
     <div class="glass-envelope">
       <div class="envelope-badge">🌷🥺❤️</div>
-      <div class="typewriter-container" id="letter-content">
+      <div class="typewriter-container">
         <span class="highlight-sorry">First thing I am sorry baby ❤🌷 ki aapko hurt kiya tha, aaj dil se sorry babu 😭😭</span>
         
         <p>Merako tum he achi lagati ho or koyi nahi 😭 Mana ki hum bol deta h ki ye wo and sab kuch, but dil sa sorry mangata h babu maaf kar do 😭</p>
@@ -269,16 +354,27 @@
       </div>
 
       <div class="action-group">
-        <button class="love-btn heart-burst-btn" onclick="celebrateBurst()">Maan jao na babu 🥺💖</button>
-        <button class="love-btn" onclick="restartWholeStory()">Watch Again 🌱</button>
+        <button class="love-btn heart-burst-btn" onclick="startTransitionToRain()">Next Surprise For Akanksha 🌧️💖</button>
       </div>
     </div>
   </div>
 
+  <!-- Step 3: Loading Transition Screen -->
+  <div id="loader-screen">
+    <div class="loader-heart">💖</div>
+    <div class="loader-title">Opening Akanksha's Infinite Love Shower...</div>
+    <div class="progress-track">
+      <div class="progress-bar" id="load-bar"></div>
+    </div>
+  </div>
+
+  <!-- Step 4: Rain Overlay -->
+  <div id="rain-overlay">
+    <div class="rain-header">Akanksha, You Are My Whole World ❤️</div>
+    <div class="rain-footer-hint">Forever & Always Falling For You 🌷</div>
+  </div>
+
   <script>
-    // ==========================================
-    // CANVASES & INITIAL SETUP
-    // ==========================================
     const bgCanvas = document.getElementById("bg-canvas");
     const bgCtx = bgCanvas.getContext("2d");
 
@@ -288,14 +384,20 @@
     const fxCanvas = document.getElementById("fx-canvas");
     const fxCtx = fxCanvas.getContext("2d");
 
+    const rainCanvas = document.getElementById("rain-canvas");
+    const rainCtx = rainCanvas.getContext("2d");
+
     const introScreen = document.getElementById("intro-screen");
     const finalScreen = document.getElementById("final-screen");
+    const loaderScreen = document.getElementById("loader-screen");
+    const loadBar = document.getElementById("load-bar");
+    const rainOverlay = document.getElementById("rain-overlay");
 
     let width = 0, height = 0;
     function resize() {
       width = window.innerWidth;
       height = window.innerHeight;
-      [bgCanvas, treeCanvas, fxCanvas].forEach(c => {
+      [bgCanvas, treeCanvas, fxCanvas, rainCanvas].forEach(c => {
         c.width = width;
         c.height = height;
       });
@@ -303,17 +405,13 @@
     }
     window.addEventListener("resize", resize);
 
-    // ==========================================
-    // SOFT AUDIO (Synthesized - No files needed)
-    // ==========================================
+    // Audio Engine
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
+      if (audioCtx.state === "suspended") audioCtx.resume();
     }
 
     function playSoftChime(freq, duration = 2.0, gainVal = 0.07) {
@@ -337,12 +435,9 @@
 
     const chords = [261.63, 329.63, 392.00, 523.25, 587.33, 659.25];
 
-    // ==========================================
-    // BACKGROUND STARS & FIREFLIES
-    // ==========================================
+    // Background Stars & Fireflies
     let stars = [];
     let fireflies = [];
-
     function initStars() {
       stars = [];
       const starCount = Math.floor((width * height) / 4500);
@@ -411,107 +506,12 @@
       requestAnimationFrame(drawBackground);
     }
 
-    // ==========================================
-    // FX PARTICLES: Petals & Sparkles
-    // ==========================================
-    let particles = [];
-    let petals = [];
-
-    function addSparkle(x, y) {
-      for (let i = 0; i < 3; i++) {
-        particles.push({
-          x: x + (Math.random() - 0.5) * 15,
-          y: y + (Math.random() - 0.5) * 15,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: (Math.random() - 0.5) * 1.5,
-          size: Math.random() * 4 + 2,
-          alpha: 1,
-          color: Math.random() > 0.5 ? '#ff70a6' : '#ffd166'
-        });
-      }
-    }
-
-    window.addEventListener("pointermove", (e) => addSparkle(e.clientX, e.clientY));
-    window.addEventListener("touchmove", (e) => {
-      if (e.touches.length > 0) addSparkle(e.touches[0].clientX, e.touches[0].clientY);
-    });
-
-    function spawnPetal(x, y, hue) {
-      petals.push({
-        x: x,
-        y: y,
-        vx: (Math.random() - 0.5) * 1.8,
-        vy: Math.random() * 1.2 + 0.8,
-        angle: Math.random() * Math.PI * 2,
-        vAngle: (Math.random() - 0.5) * 0.04,
-        size: Math.random() * 6 + 4,
-        hue: hue || (330 + Math.random() * 40),
-        alpha: 1
-      });
-    }
-
-    function renderFX() {
-      fxCtx.clearRect(0, 0, width, height);
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.025;
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-        fxCtx.fillStyle = p.color;
-        fxCtx.globalAlpha = p.alpha;
-        fxCtx.beginPath();
-        fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        fxCtx.fill();
-      }
-
-      for (let i = petals.length - 1; i >= 0; i--) {
-        const pet = petals[i];
-        pet.x += pet.vx;
-        pet.y += pet.vy;
-        pet.angle += pet.vAngle;
-
-        if (pet.y > height + 20) {
-          petals.splice(i, 1);
-          continue;
-        }
-
-        fxCtx.save();
-        fxCtx.translate(pet.x, pet.y);
-        fxCtx.rotate(pet.angle);
-        fxCtx.fillStyle = `hsla(${pet.hue}, 85%, 72%, ${pet.alpha})`;
-        fxCtx.beginPath();
-        fxCtx.ellipse(0, 0, pet.size * 1.2, pet.size * 0.6, 0, 0, Math.PI * 2);
-        fxCtx.fill();
-        fxCtx.restore();
-      }
-
-      fxCtx.globalAlpha = 1;
-      requestAnimationFrame(renderFX);
-    }
-
-    // ==========================================
-    // TREE SYSTEM
-    // ==========================================
+    // Tree Growth Engine
     let branchQueue = [];
     let treeAnimationId = null;
 
     function createBranch(startX, startY, length, angle, thickness, hue, depth) {
-      return {
-        startX,
-        startY,
-        currentLen: 0,
-        targetLen: length,
-        angle,
-        thickness,
-        hue,
-        depth,
-        isDone: false
-      };
+      return { startX, startY, currentLen: 0, targetLen: length, angle, thickness, hue, depth, isDone: false };
     }
 
     function loopTree() {
@@ -523,7 +523,6 @@
         if (b.isDone) continue;
 
         activeBranches++;
-
         const prevX = b.startX + Math.cos(b.angle) * b.currentLen;
         const prevY = b.startY + Math.sin(b.angle) * b.currentLen;
 
@@ -548,11 +547,9 @@
 
           if (b.depth >= 8 || b.targetLen < 14) {
             drawBlossom(nextX, nextY, b.hue);
-            if (Math.random() > 0.45) spawnPetal(nextX, nextY, b.hue);
           } else {
             if (Math.random() > 0.85) {
-              const chordNote = chords[b.depth % chords.length];
-              playSoftChime(chordNote, 1.8, 0.05);
+              playSoftChime(chords[b.depth % chords.length], 1.8, 0.05);
             }
 
             const nextDepth = b.depth + 1;
@@ -563,17 +560,11 @@
             const spread1 = 0.35 + Math.random() * 0.15;
             const spread2 = -(0.35 + Math.random() * 0.15);
 
-            branchQueue.push(
-              createBranch(nextX, nextY, nextLen, b.angle + spread1, nextThick, (b.hue + hueShift) % 360, nextDepth)
-            );
-            branchQueue.push(
-              createBranch(nextX, nextY, nextLen, b.angle + spread2, nextThick, (b.hue + hueShift + 15) % 360, nextDepth)
-            );
+            branchQueue.push(createBranch(nextX, nextY, nextLen, b.angle + spread1, nextThick, (b.hue + hueShift) % 360, nextDepth));
+            branchQueue.push(createBranch(nextX, nextY, nextLen, b.angle + spread2, nextThick, (b.hue + hueShift + 15) % 360, nextDepth));
 
             if (Math.random() > 0.65 && b.depth < 5) {
-              branchQueue.push(
-                createBranch(nextX, nextY, nextLen * 0.75, b.angle + (Math.random() - 0.5) * 0.4, nextThick, (b.hue + hueShift * 2) % 360, nextDepth)
-              );
+              branchQueue.push(createBranch(nextX, nextY, nextLen * 0.75, b.angle + (Math.random() - 0.5) * 0.4, nextThick, (b.hue + hueShift * 2) % 360, nextDepth));
             }
           }
         }
@@ -582,7 +573,10 @@
       if (activeBranches > 0) {
         treeAnimationId = requestAnimationFrame(loopTree);
       } else {
-        setTimeout(() => triggerFinalLoveScene(), 800);
+        setTimeout(() => {
+          finalScreen.classList.add("show");
+          playSoftChime(523.25, 3.0, 0.12);
+        }, 800);
       }
     }
 
@@ -602,31 +596,6 @@
       treeCtx.restore();
     }
 
-    // ==========================================
-    // SCENE CONTROLLERS
-    // ==========================================
-    function triggerFinalLoveScene() {
-      finalScreen.classList.add("show");
-      playSoftChime(523.25, 3.0, 0.12);
-
-      setInterval(() => {
-        if (finalScreen.classList.contains("show")) {
-          spawnPetal(Math.random() * width, -10, 330 + Math.random() * 30);
-        }
-      }, 240);
-    }
-
-    function celebrateBurst() {
-      initAudio();
-      playSoftChime(659.25, 2.5, 0.15);
-      for (let i = 0; i < 45; i++) {
-        spawnPetal(width / 2 + (Math.random() - 0.5) * 120, height / 2, Math.random() * 360);
-      }
-      for (let i = 0; i < 55; i++) {
-        addSparkle(width / 2 + (Math.random() - 0.5) * 220, height / 2 + (Math.random() - 0.5) * 120);
-      }
-    }
-
     function startGrowing() {
       initAudio();
       introScreen.classList.add("hide");
@@ -641,28 +610,139 @@
         const trunkLength = Math.min(height * 0.22, 135);
 
         branchQueue = [];
-        branchQueue.push(
-          createBranch(startX, startY, trunkLength, -Math.PI / 2, 13, 320, 0)
-        );
+        branchQueue.push(createBranch(startX, startY, trunkLength, -Math.PI / 2, 13, 320, 0));
         loopTree();
       }, 1000);
     }
 
-    function restartWholeStory() {
-      if (treeAnimationId) cancelAnimationFrame(treeAnimationId);
-      finalScreen.classList.remove("show");
-      treeCtx.clearRect(0, 0, width, height);
-      petals = [];
-      particles = [];
-      introScreen.classList.remove("hide");
-    }
-
     document.getElementById("start-trigger").addEventListener("click", startGrowing);
 
-    // Run ambient systems
+    // ==========================================
+    // UNLIMITED "I LOVE U AKANKSHA" RAIN ENGINE
+    // ==========================================
+    let raindrops = [];
+    let ripples = [];
+    let isRaining = false;
+
+    const loveTexts = [
+      "I love u Akanksha ❤️",
+      "I love u so much Akanksha 💖",
+      "Akanksha meri jaan 🌷",
+      "Forever Akanksha 💘",
+      "I love you Akanksha ji ✨",
+      "Akanksha 💖"
+    ];
+
+    function spawnRainDrop() {
+      const isHeartOnly = Math.random() > 0.65;
+      const text = isHeartOnly ? (Math.random() > 0.5 ? "❤️" : "🌷") : loveTexts[Math.floor(Math.random() * loveTexts.length)];
+      
+      raindrops.push({
+        x: Math.random() * width,
+        y: -40,
+        speed: 2.2 + Math.random() * 3.2,
+        fontSize: Math.floor(14 + Math.random() * 12),
+        text: text,
+        color: `hsl(${330 + Math.random() * 45}, 100%, ${70 + Math.random() * 20}%)`,
+        opacity: 0.6 + Math.random() * 0.4
+      });
+    }
+
+    function loopRain() {
+      if (!isRaining) return;
+
+      rainCtx.clearRect(0, 0, width, height);
+
+      // Raindrop frequency
+      if (raindrops.length < 85 && Math.random() > 0.25) {
+        spawnRainDrop();
+      }
+
+      // Draw and update falling text drops
+      for (let i = raindrops.length - 1; i >= 0; i--) {
+        const drop = raindrops[i];
+        drop.y += drop.speed;
+
+        rainCtx.font = `600 ${drop.fontSize}px 'Poppins', sans-serif`;
+        rainCtx.fillStyle = drop.color;
+        rainCtx.globalAlpha = drop.opacity;
+        rainCtx.shadowBlur = 10;
+        rainCtx.shadowColor = drop.color;
+        rainCtx.fillText(drop.text, drop.x, drop.y);
+
+        // Splashes at the bottom surface
+        if (drop.y >= height - 25) {
+          ripples.push({
+            x: drop.x + 20,
+            y: height - 15,
+            radius: 2,
+            maxRadius: 18 + Math.random() * 16,
+            alpha: 0.8,
+            color: drop.color
+          });
+          raindrops.splice(i, 1);
+        }
+      }
+
+      // Draw ripple waves on surface
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.radius += 1.2;
+        r.alpha -= 0.025;
+
+        if (r.alpha <= 0 || r.radius >= r.maxRadius) {
+          ripples.splice(i, 1);
+          continue;
+        }
+
+        rainCtx.beginPath();
+        rainCtx.ellipse(r.x, r.y, r.radius * 1.8, r.radius * 0.5, 0, 0, Math.PI * 2);
+        rainCtx.strokeStyle = r.color;
+        rainCtx.globalAlpha = r.alpha;
+        rainCtx.lineWidth = 1.4;
+        rainCtx.stroke();
+      }
+
+      rainCtx.shadowBlur = 0;
+      rainCtx.globalAlpha = 1;
+      requestAnimationFrame(loopRain);
+    }
+
+    // Transition from Letter to Rain Screen
+    function startTransitionToRain() {
+      initAudio();
+      playSoftChime(659.25, 2.0, 0.12);
+
+      // Fade out letter
+      finalScreen.classList.add("fade-out");
+
+      // Show loader screen
+      setTimeout(() => {
+        loaderScreen.classList.add("active");
+        setTimeout(() => { loadBar.style.width = "100%"; }, 100);
+
+        // Fade into unlimited rain room
+        setTimeout(() => {
+          loaderScreen.classList.remove("active");
+          rainCanvas.style.display = "block";
+          rainOverlay.style.display = "flex";
+          isRaining = true;
+          loopRain();
+
+          // Soft ambient continuous sound bells
+          setInterval(() => {
+            if (isRaining) {
+              const note = chords[Math.floor(Math.random() * chords.length)];
+              playSoftChime(note, 2.5, 0.04);
+            }
+          }, 1400);
+        }, 2200);
+      }, 800);
+    }
+
+    // Initialize Canvas
     resize();
     drawBackground();
-    renderFX();
   </script>
 </body>
 </html>
